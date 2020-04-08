@@ -1,8 +1,13 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from learning.models import Class, ClassSerializer
 
 
-class ClassView(ListCreateAPIView):
+class ClassesView(ListCreateAPIView):
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer
+
+
+class ClassView(RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
