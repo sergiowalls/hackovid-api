@@ -2,14 +2,14 @@ import os
 
 from django.db import migrations
 
-from learning.models import User
-
 
 def forwards_func(apps, schema_editor):
+    User = apps.get_model("learning", "User")
     User.objects.create_superuser(username='admin', password=os.environ.get('ADMIN_PASSWORD', 'admin'))
 
 
 def reverse_func(apps, schema_editor):
+    User = apps.get_model("learning", "User")
     User.objects.get(username='admin').delete()
 
 
