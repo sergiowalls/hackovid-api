@@ -10,6 +10,15 @@ class ClassesView(ListCreateAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        data['teacher'] = request.user.pk
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ClassView(RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
@@ -29,7 +38,6 @@ class UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            save = serializer.save()
-            print(save)
+            serializer.save()
             return Response(None, status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
