@@ -63,3 +63,9 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = '__all__'
+
+
+class LearningUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LearningUnit
+        fields = '__all__'

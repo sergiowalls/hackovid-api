@@ -3,7 +3,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from learning.models import Class, ClassSerializer, UserSerializer
+from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer
 
 
 class ClassesView(ListCreateAPIView):
@@ -14,6 +14,14 @@ class ClassesView(ListCreateAPIView):
 class ClassView(RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
+
+class LearningUnitsView(ListCreateAPIView):
+    queryset = LearningUnit.objects.all()
+    serializer_class = LearningUnitSerializer
+
+class LearningUnitView(RetrieveUpdateDestroyAPIView):
+    queryset = LearningUnit.objects.all()
+    serializer_class = LearningUnitSerializer
 
 
 class UserView(APIView):
