@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 class User(AbstractUser):
     institution = models.fields.CharField(max_length=60)
+    description = models.fields.CharField(max_length=255, null=True, blank=True)
 
 
 class UserSerializer(serializers.ModelSerializer):
