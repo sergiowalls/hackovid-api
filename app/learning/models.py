@@ -1,6 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from rest_framework import serializers
+
+
+class User(AbstractUser):
+    institution = models.fields.CharField(max_length=60)
 
 
 class LearningUnit(models.Model):
@@ -22,6 +26,11 @@ class Section(models.Model):
     title = models.fields.CharField(max_length=60)
     description = models.fields.TextField()
     resources = models.ManyToManyField(Resource, blank=True)
+
+
+class SectionCreator(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Class(models.Model):
