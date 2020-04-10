@@ -1,6 +1,9 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from learning.models import Class, ClassSerializer
+from learning.models import Class, ClassSerializer, UserSerializer
 
 
 class ClassesView(ListCreateAPIView):
@@ -11,3 +14,14 @@ class ClassesView(ListCreateAPIView):
 class ClassView(RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
+
+
+class UserView(APIView):
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            save = serializer.save()
+            print(save)
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

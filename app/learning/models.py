@@ -7,6 +7,24 @@ class User(AbstractUser):
     institution = models.fields.CharField(max_length=60)
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'institution']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data.get('password'))
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data.get('password'))
+        instance.save()
+        return instance
+
+
 class LearningUnit(models.Model):
     title = models.fields.CharField(max_length=60)
     subject = models.fields.CharField(max_length=60)
