@@ -21,13 +21,13 @@ class LinkResource(Resource):
 class Section(models.Model):
     title = models.fields.CharField(max_length=60)
     description = models.fields.TextField()
-    resources = models.ManyToManyField(Resource, null=True, blank=True)
+    resources = models.ManyToManyField(Resource, blank=True)
 
 
 class Class(models.Model):
     title = models.fields.CharField(max_length=120)
     learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
-    sections = models.ManyToManyField(Section, null=True, blank=True)
+    sections = models.ManyToManyField(Section, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.fields.DateTimeField(auto_now_add=True)
 
