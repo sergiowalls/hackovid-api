@@ -1,11 +1,14 @@
 import os
 
+from django.contrib.auth.hashers import make_password
 from django.db import migrations
 
 
 def forwards_func(apps, schema_editor):
+    password = make_password(os.environ.get('ADMIN_PASSWORD', 'admin'))
     User = apps.get_model("learning", "User")
-    User.objects.create_superuser(username='admin', password=os.environ.get('ADMIN_PASSWORD', 'admin'))
+    user = User(username='admin', password=password, is_superuser=True, is_staff=True)
+    user.save()
 
 
 def reverse_func(apps, schema_editor):
