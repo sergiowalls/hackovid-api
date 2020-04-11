@@ -1,11 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView, \
+    get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer, User, \
-    ClassPostSerializer, UserCreateSerializer
+    ClassPostSerializer, UserCreateSerializer, Section, SectionsSerializer
 
 
 class ClassFilter(FilterSet):
@@ -26,8 +27,6 @@ class ClassesView(ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class ClassView(RetrieveUpdateDestroyAPIView):
@@ -65,3 +64,22 @@ class MyUserView(APIView):
 class UserView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class MySavedSectionsView(ListAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionsSerializer
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
+        return self.request.user.saved_sections
+
+
+class MySavedSectionView(APIView):
+
+    def post(self, request, pk):
+        request.user.saved_sections.add(pk)
+        request.user.save()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)

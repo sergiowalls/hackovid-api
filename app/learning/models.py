@@ -3,9 +3,32 @@ from django.db import models
 from rest_framework import serializers
 
 
+class LearningUnit(models.Model):
+    title = models.fields.CharField(max_length=140)
+    subject = models.fields.CharField(max_length=60)
+    course = models.fields.CharField(max_length=60)
+
+
+class Resource(models.Model):
+    title = models.fields.CharField(max_length=60)
+
+
+class LinkResource(Resource):
+    link = models.fields.URLField()
+    is_video = models.fields.BooleanField()
+
+
+class Section(models.Model):
+    title = models.fields.CharField(max_length=60)
+    description = models.fields.TextField()
+    resources = models.ManyToManyField(Resource, blank=True)
+    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
+
+
 class User(AbstractUser):
     institution = models.fields.CharField(max_length=60)
     description = models.fields.CharField(max_length=255, null=True, blank=True)
+    saved_sections  = models.ManyToManyField(Section, blank=True, null=True)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -30,28 +53,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'id', 'institution', 'first_name']
-
-
-class LearningUnit(models.Model):
-    title = models.fields.CharField(max_length=140)
-    subject = models.fields.CharField(max_length=60)
-    course = models.fields.CharField(max_length=60)
-
-
-class Resource(models.Model):
-    title = models.fields.CharField(max_length=60)
-
-
-class LinkResource(Resource):
-    link = models.fields.URLField()
-    is_video = models.fields.BooleanField()
-
-
-class Section(models.Model):
-    title = models.fields.CharField(max_length=60)
-    description = models.fields.TextField()
-    resources = models.ManyToManyField(Resource, blank=True)
-    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
 
 
 class SectionCreator(models.Model):
@@ -103,3 +104,11 @@ class LearningUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = LearningUnit
         fields = '__all__'
+
+class SectionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+
+
