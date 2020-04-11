@@ -1,10 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer
+from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer, User
 
 
 class ClassFilter(FilterSet):
@@ -42,7 +42,7 @@ class LearningUnitView(RetrieveUpdateDestroyAPIView):
     serializer_class = LearningUnitSerializer
 
 
-class UserView(APIView):
+class UsersView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -50,3 +50,15 @@ class UserView(APIView):
             serializer.save()
             return Response(None, status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyUserView(APIView):
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+
+class UserView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
