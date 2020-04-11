@@ -45,6 +45,7 @@ class Section(models.Model):
     title = models.fields.CharField(max_length=60)
     description = models.fields.TextField()
     resources = models.ManyToManyField(Resource, blank=True)
+    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
 
 
 class SectionCreator(models.Model):
@@ -54,16 +55,33 @@ class SectionCreator(models.Model):
 
 class Class(models.Model):
     title = models.fields.CharField(max_length=120)
-    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
     sections = models.ManyToManyField(Section, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.fields.DateTimeField(auto_now_add=True)
 
 
+class SectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+
 class ClassSerializer(serializers.ModelSerializer):
+    sections = SectionSerializer(many=True)
+
     class Meta:
         model = Class
         fields = '__all__'
+
+    def create(self, validated_data):
+        sections = validated_data.pop('sections')
+        class_ = Class.objects.create(**validated_data)
+        for section_data in sections:
+            resources = section_data.pop('resources')
+            section = Section.objects.create(**section_data)
+            class_.sections.add(section)
+        class_.save()
+        return class_
 
 
 class LearningUnitSerializer(serializers.ModelSerializer):
