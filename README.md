@@ -33,4 +33,4 @@ Create a `.env` file with `DEBUG=1` to enable local development features.
 
 Run `pipenv run migrate` to apply database migrations.
 
-Execute `pipenv run server` to start the development server.
+Execute `pipenv run serve` to start the development server.
