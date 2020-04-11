@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LearningUnit(models.Model):
-    title = models.fields.CharField(max_length=60)
+    title = models.fields.CharField(max_length=140)
     subject = models.fields.CharField(max_length=60)
     course = models.fields.CharField(max_length=60)
 
