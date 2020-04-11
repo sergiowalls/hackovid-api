@@ -11,7 +11,7 @@ class User(AbstractUser):
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password', 'institution']
+        fields = ['username', 'password', 'institution', 'first_name']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -29,7 +29,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'id', 'institution']
+        fields = ['username', 'id', 'institution', 'first_name']
 
 
 class LearningUnit(models.Model):
