@@ -1,4 +1,4 @@
 staticfiles/
 db.sqlite3
 .idea
-app/.env
+.env*
