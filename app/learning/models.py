@@ -8,7 +8,7 @@ class User(AbstractUser):
     description = models.fields.CharField(max_length=255, null=True, blank=True)
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'institution']
@@ -24,6 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data.get('password'))
         instance.save()
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'id', 'institution']
 
 
 class LearningUnit(models.Model):
@@ -66,7 +72,7 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ClassSerializer(serializers.ModelSerializer):
+class ClassPostSerializer(serializers.ModelSerializer):
     sections = SectionSerializer(many=True)
 
     class Meta:
@@ -82,6 +88,15 @@ class ClassSerializer(serializers.ModelSerializer):
             class_.sections.add(section)
         class_.save()
         return class_
+
+
+class ClassSerializer(serializers.ModelSerializer):
+    sections = SectionSerializer(many=True)
+    teacher = UserSerializer()
+
+    class Meta:
+        model = Class
+        fields = '__all__'
 
 
 class LearningUnitSerializer(serializers.ModelSerializer):
