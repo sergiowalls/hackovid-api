@@ -1,7 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView, \
-    CreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -121,6 +120,7 @@ class FileUploadView(APIView):
 
         if file_serializer.is_valid():
             file = file_serializer.save()
-            return Response({'url': request.build_absolute_uri(str(file))}, status=status.HTTP_201_CREATED)
+            return Response({'url': 'http://' + request.get_host() + settings.MEDIA_URL + (str(file))},
+                            status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
