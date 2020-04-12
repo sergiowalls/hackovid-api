@@ -21,7 +21,6 @@ class Section(models.Model):
     title = models.fields.CharField(max_length=60)
     description = models.fields.TextField()
     resources = models.ManyToManyField(Resource, blank=True)
-    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING)
 
 
 class User(AbstractUser):
@@ -40,6 +39,7 @@ class Class(models.Model):
     title = models.fields.CharField(max_length=120)
     sections = models.ManyToManyField(Section, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    learning_unit = models.ForeignKey(LearningUnit, on_delete=models.DO_NOTHING, null=True)
     created_at = models.fields.DateTimeField(auto_now_add=True)
 
 
