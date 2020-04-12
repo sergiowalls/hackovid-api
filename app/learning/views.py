@@ -10,6 +10,7 @@ from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit
 
 class ClassFilter(FilterSet):
     learning_unit = NumberFilter(field_name='sections__learning_unit')
+    teacher = NumberFilter(field_name='teacher')
 
 
 class ClassesView(ListCreateAPIView):
@@ -77,6 +78,17 @@ class MySavedSectionsView(ListAPIView):
 
     def get_queryset(self):
         return self.request.user.saved_sections
+
+
+class MyClassesView(ListAPIView):
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
+        return self.request.user.class_set
 
 
 class MySavedSectionView(APIView):
