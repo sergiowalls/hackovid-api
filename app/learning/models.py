@@ -111,3 +111,16 @@ class SectionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = '__all__'
+
+
+class File(models.Model):
+    file = models.FileField(blank=False, null=False)
+
+    def __str__(self):
+        return self.file.name
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = "__all__"
+

@@ -1,11 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView, \
+    CreateAPIView
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from hackovid import settings
 from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer, User, \
-    ClassPostSerializer, UserCreateSerializer, Section, SectionsSerializer
+    ClassPostSerializer, UserCreateSerializer, Section, SectionsSerializer, FileSerializer
 
 
 class ClassFilter(FilterSet):
@@ -108,3 +111,16 @@ class MyLearningUnitsView(ListAPIView):
 
     def get_queryset(self):
         return self.request.user.learning_units
+
+
+class FileUploadView(APIView):
+    parser_class = (FileUploadParser,)
+
+    def post(self, request):
+        file_serializer = FileSerializer(data=request.data)
+
+        if file_serializer.is_valid():
+            file = file_serializer.save()
+            return Response({'url': request.build_absolute_uri(str(file))}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
