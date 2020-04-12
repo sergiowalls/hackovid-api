@@ -1,3 +1,4 @@
+from django.http.request import split_domain_port
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListAPIView
@@ -6,8 +7,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from hackovid import settings
-from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer, User, \
-    ClassPostSerializer, UserCreateSerializer, Section, SectionsSerializer, FileSerializer
+from learning.models import Class, LearningUnit, User, \
+    Section
+from learning.serializers import UserCreateSerializer, UserSerializer, ClassCreateSerializer, ClassSerializer, \
+    LearningUnitSerializer, SectionsSerializer, FileSerializer
 
 
 class ClassFilter(FilterSet):
@@ -24,7 +27,7 @@ class ClassesView(ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         data['teacher'] = request.user.pk
-        serializer = ClassPostSerializer(data=data)
+        serializer = ClassCreateSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -120,7 +123,10 @@ class FileUploadView(APIView):
 
         if file_serializer.is_valid():
             file = file_serializer.save()
-            return Response({'url': 'http://' + request.get_host() + settings.MEDIA_URL + (str(file))},
-                            status=status.HTTP_201_CREATED)
+            host = request.get_host()
+            domain, _ = split_domain_port(host)
+            port = request.get_port()
+            file_url = "http://{0}:{1}{2}{3}".format(domain, port, settings.MEDIA_URL, file)
+            return Response({'url': file_url}, status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
