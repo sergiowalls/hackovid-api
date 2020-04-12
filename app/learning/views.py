@@ -7,8 +7,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from hackovid import settings
-from learning.models import Class, ClassSerializer, UserSerializer, LearningUnit, LearningUnitSerializer, User, \
-    ClassPostSerializer, UserCreateSerializer, Section, SectionsSerializer, FileSerializer
+from learning.models import Class, LearningUnit, User, \
+    Section
+from learning.serializers import UserCreateSerializer, UserSerializer, ClassCreateSerializer, ClassSerializer, \
+    LearningUnitSerializer, SectionsSerializer, FileSerializer
 
 
 class ClassFilter(FilterSet):
@@ -25,7 +27,7 @@ class ClassesView(ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         data['teacher'] = request.user.pk
-        serializer = ClassPostSerializer(data=data)
+        serializer = ClassCreateSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
