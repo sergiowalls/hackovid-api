@@ -28,7 +28,8 @@ class Section(models.Model):
 class User(AbstractUser):
     institution = models.fields.CharField(max_length=60)
     description = models.fields.CharField(max_length=255, null=True, blank=True)
-    saved_sections  = models.ManyToManyField(Section, blank=True, null=True)
+    saved_sections = models.ManyToManyField(Section, blank=True)
+    learning_units = models.ManyToManyField(LearningUnit, blank=True)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -105,10 +106,8 @@ class LearningUnitSerializer(serializers.ModelSerializer):
         model = LearningUnit
         fields = '__all__'
 
+
 class SectionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = '__all__'
-
-
-
